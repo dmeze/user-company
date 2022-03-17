@@ -1,0 +1,8 @@
+.loader {
+  opacity: .50;
+  filter: alpha(opacity=65);
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  width: 100%;
+}
