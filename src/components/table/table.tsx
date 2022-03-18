@@ -12,7 +12,7 @@ import Link from "next/link";
 
 import styles from "styles/table.module.scss";
 
-const StickyHeadTable = ({
+const UnifyTable = ({
   header,
   rows,
   path,
@@ -88,4 +88,4 @@ const StickyHeadTable = ({
   );
 };
 
-export default StickyHeadTable;
+export default UnifyTable;

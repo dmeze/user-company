@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 import { getUsers } from "api/user";
 import Layout from "components/layout";
-import StickyHeadTable from "../components/table";
+import UnifyTable from "components/table";
 
 import { usersHeader, userPath } from "../constants";
 import { UserProps } from "types/user_interfaces";
@@ -13,7 +13,7 @@ const Users: NextPage<UserProps> = ({ users }) => {
 
   return (
     <Layout title="Users">
-      <StickyHeadTable
+      <UnifyTable
         header={usersHeader}
         rows={users}
         path={userPath}
