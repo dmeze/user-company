@@ -1,18 +1,45 @@
 import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { login } from "api/user";
+import { User } from "types/user_interfaces";
 
 export default NextAuth({
-  pages: {
-    signIn: "/auth/signin",
-    signOut: "/auth/signout",
-    verifyRequest: "/auth/verify-request", // (used for check email message)
-    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
-  },
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
+    CredentialsProvider({
+      name: "Login via credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        // @ts-ignore
+        const user: User = await login(credentials!);
+        if (user) {
+          return user;
+        }
+        return null;
+      },
     }),
-    // ...add more providers here
   ],
+  callbacks: {
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.user = user;
+        token.role = user.role;
+      }
+      return token;
+    },
+    session: ({ session, token }) => {
+      if (token) {
+        session.id = token.id;
+        session.role = token.role;
+      }
+      return session;
+    },
+  },
+  secret: "login",
+  jwt: {
+    secret: "login",
+  },
 });

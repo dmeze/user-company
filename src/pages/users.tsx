@@ -1,15 +1,27 @@
 import type { NextPage } from "next";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
-import { getUsers } from "api/user";
 import Layout from "components/layout";
 import UnifyTable from "components/table";
 
-import { usersHeader, userPath } from "../constants";
-import { UserProps } from "types/user_interfaces";
-import { useRouter } from "next/router";
+import { getUsersSelector } from "store/user/users.selector";
+import { getUsers } from "store/user/users.thunk";
+import { User } from "types/user_interfaces";
 
-const Users: NextPage<UserProps> = ({ users }) => {
+import { usersHeader, userPath } from "../constants";
+
+const Users: NextPage = () => {
   const { query } = useRouter();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, [dispatch]);
+
+  const users: Array<User> = useSelector(getUsersSelector);
 
   return (
     <Layout title="Users">
@@ -22,14 +34,5 @@ const Users: NextPage<UserProps> = ({ users }) => {
     </Layout>
   );
 };
-
-export async function getStaticProps() {
-  return {
-    props: {
-      users: await getUsers(),
-    },
-    revalidate: 3,
-  };
-}
 
 export default Users;

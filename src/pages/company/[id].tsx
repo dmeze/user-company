@@ -1,9 +1,8 @@
+import { useState } from "react";
 import { NextPage } from "next";
+import Link from "next/link";
+import { connect } from "react-redux";
 
-import { Company, CompanyStaticProps } from "types/company_interfaces";
-import { getCompanies, getCompanyById } from "api/company";
-import Layout from "components/layout";
-import styles from "styles/user.module.scss";
 import {
   Avatar,
   CardHeader,
@@ -25,13 +24,21 @@ import {
   LocalPhone,
   SupervisedUserCircle,
 } from "@mui/icons-material";
-import { useState } from "react";
-import Link from "next/link";
+
+import Layout from "components/layout";
 import ModalCompany from "components/modals/modalCompany";
+
+import { wrapper } from "store/store";
+import { State } from "store/interfaces";
+import { getCompanySelector } from "store/companies/companies.selector";
+import { getCompanies } from "store/companies/companies.thunk";
+
+import { Company } from "types/company_interfaces";
+
+import styles from "styles/user.module.scss";
 
 const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
   company,
-  companies,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -61,7 +68,6 @@ const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
           open={open}
           handleClose={handleCloseModal}
           company={company}
-          companies={companies}
         />
         <CardContent className={styles.cardBody}>
           <Stack>
@@ -146,26 +152,21 @@ const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
   );
 };
 
-export async function getStaticPaths() {
-  const companies = await getCompanies();
-  const paths = companies.map((company: Company) => ({
-    params: { id: company.id },
-  }));
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    await store.dispatch<any>(getCompanies());
+    return {
+      props: {
+        id: context.params!.id,
+      },
+    };
+  }
+);
 
+const mapStateToProps = (state: State, { id }: { id: string }) => {
   return {
-    paths,
-    fallback: true,
+    company: getCompanySelector(state, id)(state)!,
   };
-}
+};
 
-export async function getStaticProps({ params }: CompanyStaticProps) {
-  return {
-    props: {
-      company: await getCompanyById(params.id),
-      companies: await getCompanies(),
-    },
-    revalidate: 360,
-  };
-}
-
-export default Company;
+export default connect(mapStateToProps)(Company);

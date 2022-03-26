@@ -1,4 +1,5 @@
 import { useState, MouseEvent, useEffect } from "react";
+import { connect, useDispatch } from "react-redux";
 import {
   Modal as ModalUi,
   Box,
@@ -10,22 +11,29 @@ import {
   IconButton,
   FormControl,
 } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import styles from "styles/modal.module.scss";
 import { Company } from "types/company_interfaces";
 import { User } from "types/user_interfaces";
-import { updateCompany } from "api/company";
-import { Delete } from "@mui/icons-material";
+
+import { State } from "store/interfaces";
+import { getLoadingSelector } from "store/companies/companies.selector";
+
+import styles from "styles/modal.module.scss";
+import { updateCompanyLoader } from "store/companies/companies.action";
+import { updateCompany } from "store/companies/companies.thunk";
 
 const ModalCompany = ({
   open,
   handleClose,
   company,
+  loading,
 }: {
   open: boolean;
   handleClose: () => void;
   company: Company;
+  loading: boolean;
 }) => {
   const style = {
     position: "absolute",
@@ -44,6 +52,15 @@ const ModalCompany = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [users, setUsers] = useState<Array<User>>(company.users);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(loading);
+      handleClose();
+    }, 1500);
+  }, [loading, handleClose]);
 
   const handleDeleteUser = (id: string) => {
     setUsers(
@@ -65,12 +82,8 @@ const ModalCompany = ({
       }
     });
     company.users = users;
-    updateCompany(company).then(() => {
-      setTimeout(() => {
-        setIsLoading(false);
-        handleClose();
-      }, 1000);
-    });
+    dispatch(updateCompanyLoader(true));
+    dispatch(updateCompany(company));
   };
   return (
     <ModalUi
@@ -88,7 +101,7 @@ const ModalCompany = ({
         >
           <Stack spacing={2}>
             <TextField
-              id="name"
+              id="companyName"
               required
               label="Name"
               defaultValue={company.companyName}
@@ -109,8 +122,8 @@ const ModalCompany = ({
               <FormControl className={styles.form}>
                 <InputLabel id="labelId">Users</InputLabel>
                 <Select labelId="labelId" label="Users">
-                  {users.map(({ name, id }) => (
-                    <MenuItem key={id}>
+                  {users.map(({ name, id }, index) => (
+                    <MenuItem key={index}>
                       {name}
                       <IconButton
                         aria-label="delete"
@@ -138,4 +151,10 @@ const ModalCompany = ({
   );
 };
 
-export default ModalCompany;
+const mapStateToProps = (state: State) => {
+  return {
+    loading: getLoadingSelector(state),
+  };
+};
+
+export default connect(mapStateToProps)(ModalCompany);

@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Link from "next/link";
 
 import styles from "styles/table.module.scss";
+import { Fragment } from "preact";
 
 const UnifyTable = ({
   header,
@@ -58,7 +59,7 @@ const UnifyTable = ({
                 >
                   {header.map(({ id, key }: { id: number; key: string }) => {
                     return (
-                      <>
+                      <Fragment key={id}>
                         <Link href={`/${path}/[id]`} as={`/${path}/${row.id}`}>
                           <TableCell key={id}>
                             {typeof row[key] === "object"
@@ -66,7 +67,7 @@ const UnifyTable = ({
                               : row[key]}
                           </TableCell>
                         </Link>
-                      </>
+                      </Fragment>
                     );
                   })}
                 </TableRow>

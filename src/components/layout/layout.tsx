@@ -1,65 +1,28 @@
-import { useState } from "react";
-import { styled } from "@mui/material/styles";
+import { useState, MouseEvent } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useSession, signIn, signOut } from "next-auth/react";
+
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Button, Menu, MenuItem } from "@mui/material";
+import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
+
+import Sidebar from "./drawer";
+import { AppBar, Main } from "./styled.layout";
 import { LayoutProps } from "types/layout_interfaces";
-import Head from "next/head";
-import { useSession, signIn, signOut } from "next-auth/react";
 
 import styles from "styles/layout.module.scss";
-import Sidebar from "./drawer";
-
-const Main = styled("main", {
-  shouldForwardProp: (prop: PropertyKey) => prop !== "open",
-})<{
-  open?: boolean;
-}>(({ theme, open }: any) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-120px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  }),
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - 120px)`,
-    marginLeft: `120px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
 
 const Layout = ({ children, title }: LayoutProps) => {
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const { data: session } = useSession();
+
+  const router = useRouter();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -69,14 +32,21 @@ const Layout = ({ children, title }: LayoutProps) => {
     setOpen(false);
   };
 
+  const handleMenu = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open}>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" open={open}>
           <Toolbar>
             <IconButton
               color="inherit"
@@ -90,19 +60,54 @@ const Layout = ({ children, title }: LayoutProps) => {
             <Typography
               variant="h6"
               component="div"
-              sx={{ ...(open && { display: "none" }) }}
+              sx={{ flexGrow: 1, ...(open && { visibility: "hidden" }) }}
             >
               {title}
             </Typography>
             {session ? (
-              <Typography variant="h6" component="div" sx={{ right: 0 }}>
-                <button onClick={() => signOut()}>Sign out</button>
-              </Typography>
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      router.push(`/user/${session.id}`);
+                    }}
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem onClick={() => signOut()}>SignOut</MenuItem>
+                </Menu>
+              </>
             ) : (
-              <Typography variant="h6" component="div" sx={{ right: 0 }}>
-                Not signed in <br />
-                <button onClick={() => signIn()}>Sign in</button>
-              </Typography>
+              <>
+                <Button variant="outlined" onClick={() => signIn()}>
+                  Sign in
+                </Button>
+                <Button variant="contained">Sign up</Button>
+              </>
             )}
           </Toolbar>
         </AppBar>

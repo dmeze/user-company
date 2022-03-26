@@ -1,4 +1,5 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect } from "react";
+import { connect, useDispatch } from "react-redux";
 import {
   Modal as ModalUi,
   Box,
@@ -8,23 +9,34 @@ import {
   SelectChangeEvent,
   Stack,
   InputLabel,
+  FormControl,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { updateUser } from "api/user";
-import styles from "styles/modal.module.scss";
 import { User } from "types/user_interfaces";
+import { State } from "store/interfaces";
+
+import {
+  getLoadingSelector,
+  getUsersSelector,
+} from "store/user/users.selector";
+import { updateUser } from "store/user/users.thunk";
+import { updateUserLoader } from "store/user/users.action";
+
+import styles from "styles/modal.module.scss";
 
 const ModalUser = ({
   open,
   handleClose,
   user,
   users,
+  loading,
 }: {
   open: boolean;
   handleClose: () => void;
   user: User;
   users: Array<User>;
+  loading: boolean;
 }) => {
   const style = {
     position: "absolute",
@@ -39,9 +51,18 @@ const ModalUser = ({
   const [creatorId, setCreatorId] = useState<string>(user.creator.id);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
   const handleCreatorChange = ({ target }: SelectChangeEvent) => {
     setCreatorId(target.value);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(loading);
+      handleClose();
+    }, 1500);
+  }, [loading, handleClose]);
 
   const handleSaveChanges = (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
@@ -58,12 +79,8 @@ const ModalUser = ({
         (user) => user.id == creatorId
       )!.name;
     });
-    updateUser(user).then(() => {
-      setTimeout(() => {
-        setIsLoading(false);
-        handleClose();
-      }, 1000);
-    });
+    dispatch(updateUserLoader(true));
+    dispatch(updateUser(user));
   };
 
   return (
@@ -115,18 +132,20 @@ const ModalUser = ({
                 label="Password"
                 defaultValue={user.password}
               />
-              <InputLabel id="labelId">Users</InputLabel>
-              <Select
-                labelId="labelId"
-                label="Users"
-                onChange={handleCreatorChange}
-              >
-                {users.map(({ name, id }) => (
-                  <MenuItem key={id} value={id}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <FormControl>
+                <InputLabel id="labelId">Creator</InputLabel>
+                <Select
+                  labelId="labelId"
+                  label="Creator"
+                  onChange={handleCreatorChange}
+                >
+                  {users.map(({ name, id }) => (
+                    <MenuItem key={id} value={id!}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
           </Stack>
           <LoadingButton
@@ -142,4 +161,11 @@ const ModalUser = ({
   );
 };
 
-export default ModalUser;
+const mapStateToProps = (state: State) => {
+  return {
+    users: getUsersSelector(state),
+    loading: getLoadingSelector(state),
+  };
+};
+
+export default connect(mapStateToProps)(ModalUser);

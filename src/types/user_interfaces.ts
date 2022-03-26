@@ -1,6 +1,6 @@
 export interface User {
   _id?: string;
-  id?: string;
+  id: string;
   name: string;
   surname: string;
   phone: string;
@@ -28,7 +28,7 @@ export interface UserStaticProps {
   params: { id: string };
 }
 
-export interface CreatorModalState {
-  id: string;
-  creatorName: string;
+export interface Credentials {
+  email: string;
+  password: string;
 }

@@ -9,8 +9,7 @@ import {
   Edit,
 } from "@mui/icons-material";
 
-import { User, UserStaticProps } from "types/user_interfaces";
-import { getUsers, getUserById } from "api/user";
+import { User } from "types/user_interfaces";
 import Layout from "components/layout";
 import ModalUser from "components/modals";
 import {
@@ -26,11 +25,13 @@ import {
 } from "@mui/material";
 
 import styles from "styles/user.module.scss";
+import { connect } from "react-redux";
+import { getOneUserSelector } from "store/user/users.selector";
+import { State } from "store/interfaces";
+import { wrapper } from "../../store/store";
+import { getUsers } from "../../store/user/users.thunk";
 
-const User: NextPage<{ user: User; users: Array<User> }> = ({
-  user,
-  users,
-}) => {
+const User: NextPage<{ user: User }> = ({ user }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleOpenModal = () => {
@@ -55,12 +56,7 @@ const User: NextPage<{ user: User; users: Array<User> }> = ({
             </IconButton>
           }
         />
-        <ModalUser
-          open={open}
-          handleClose={handleCloseModal}
-          user={user}
-          users={users}
-        />
+        <ModalUser open={open} handleClose={handleCloseModal} user={user} />
         <CardContent className={styles.cardBody}>
           <Stack direction="row" spacing={2}>
             <Stack spacing={2}>
@@ -141,26 +137,21 @@ const User: NextPage<{ user: User; users: Array<User> }> = ({
   );
 };
 
-export async function getStaticPaths() {
-  const users = await getUsers();
-  const paths = users.map((user: User) => ({
-    params: { id: user.id },
-  }));
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    await store.dispatch<any>(getUsers());
+    return {
+      props: {
+        id: context.params!.id,
+      },
+    };
+  }
+);
 
+const mapStateToProps = (state: State, { id }: { id: string }) => {
   return {
-    paths,
-    fallback: true,
+    user: getOneUserSelector(state, id)(state)!,
   };
-}
+};
 
-export async function getStaticProps({ params }: UserStaticProps) {
-  return {
-    props: {
-      user: await getUserById(params.id),
-      users: await getUsers(),
-    },
-    revalidate: 360,
-  };
-}
-
-export default User;
+export default connect(mapStateToProps)(User);

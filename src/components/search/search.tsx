@@ -1,10 +1,10 @@
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/router";
+
 import { Autocomplete, TextField, Button } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-import { User } from "types/user_interfaces";
-import { HandleInputProps, SearchProps } from "types/search_interfaces";
+import { HandleInputProps, Name, SearchProps } from "types/search_interfaces";
 
 import styles from "styles/search.module.scss";
 
@@ -21,11 +21,11 @@ const Search = ({ options }: SearchProps) => {
   };
 
   const handleInputSubmit = () => {
-    const user: User = options.find((option) => option.name === input)!;
-    if (user) {
+    const name: Name = options.find((option) => option.name === input)!;
+    if (name) {
       push({
         pathname: "/users/",
-        query: { id: user.id },
+        query: { id: name.id },
       });
     }
   };
@@ -36,7 +36,7 @@ const Search = ({ options }: SearchProps) => {
       id="search-component"
       className={styles.searchInput}
       disableClearable
-      options={options.map((option: User) => option.name)}
+      options={options.map((option: Name) => option.name)}
       onChange={handleAutoCompleteChange}
       renderInput={(params) => (
         <>

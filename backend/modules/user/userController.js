@@ -35,8 +35,15 @@ const userController = {
   },
   async delete(req, res) {
     try {
-      console.log(req.params);
       const user = await UserService.delete(req.params.id);
+      return res.json(user);
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  },
+  async login(req, res) {
+    try {
+      const user = await UserService.login(req.body);
       return res.json(user);
     } catch (e) {
       res.status(500).json(e.message);

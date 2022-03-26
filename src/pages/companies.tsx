@@ -1,12 +1,25 @@
 import type { NextPage } from "next";
+import { useDispatch, useSelector } from "react-redux";
 
-import { CompanyProps } from "types/company_interfaces";
-import { getCompanies } from "api/company";
 import Layout from "components/layout";
 import UnifyTable from "components/table";
-import { companiesHeader, companyPath } from "../constants";
 
-const Companies: NextPage<CompanyProps> = ({ companies }) => {
+import { CompanyProps } from "types/company_interfaces";
+import { getCompaniesSelector } from "store/companies/companies.selector/companies.selector";
+
+import { companiesHeader, companyPath } from "../constants";
+import { useEffect } from "react";
+import { getCompanies } from "../store/companies/companies.thunk";
+
+const CompanyComponent: NextPage<CompanyProps> = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCompanies());
+  }, [dispatch]);
+
+  const companies = useSelector(getCompaniesSelector);
+
   return (
     <Layout title="Companies">
       <UnifyTable
@@ -19,13 +32,4 @@ const Companies: NextPage<CompanyProps> = ({ companies }) => {
   );
 };
 
-export async function getStaticProps() {
-  return {
-    props: {
-      companies: await getCompanies(),
-    },
-    revalidate: 3,
-  };
-}
-
-export default Companies;
+export default CompanyComponent;
