@@ -60,7 +60,7 @@ const ModalCompany = ({
       setIsLoading(loading);
       handleClose();
     }, 1500);
-  }, [loading, handleClose]);
+  }, [loading]);
 
   const handleDeleteUser = (id: string) => {
     setUsers(

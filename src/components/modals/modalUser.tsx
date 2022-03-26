@@ -62,7 +62,7 @@ const ModalUser = ({
       setIsLoading(loading);
       handleClose();
     }, 1500);
-  }, [loading, handleClose]);
+  }, [loading]);
 
   const handleSaveChanges = (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
