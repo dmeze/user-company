@@ -1,9 +1,9 @@
 import { AnyAction } from "redux";
 
-import { SET_COMPANIES, UPDATE_COMPANY, UPDATE_COMPANY_LOADER } from "../types";
+import { ADD_USER, SET_COMPANIES, UPDATE_COMPANY } from "../types";
 import { handleUpdateCompany } from "../utils";
 
-const initialState = { companies: [], loading: false };
+const initialState = { companies: [] };
 
 export const companiesReducer = (
   state = initialState,
@@ -20,10 +20,10 @@ export const companiesReducer = (
         ...state,
         companies: handleUpdateCompany(state, payload),
       };
-    case UPDATE_COMPANY_LOADER:
+    case ADD_USER:
       return {
         ...state,
-        loading: payload,
+        companies: handleUpdateCompany(state, payload),
       };
     default:
       return state;

@@ -64,6 +64,8 @@ const UnifyTable = ({
                           <TableCell key={id}>
                             {typeof row[key] === "object"
                               ? row[key].companyName
+                              : key === "createdBy" || key === "updatedBy"
+                              ? new Date(row[key]).toDateString()
                               : row[key]}
                           </TableCell>
                         </Link>

@@ -8,9 +8,10 @@ import UnifyTable from "components/table";
 
 import { getUsersSelector } from "store/user/users.selector";
 import { getUsers } from "store/user/users.thunk";
-import { User } from "types/user_interfaces";
 
-import { usersHeader, userPath } from "../constants";
+import { usersHeader, userPath } from "constants/constants";
+
+import { User } from "types/user_interfaces";
 
 const Users: NextPage = () => {
   const { query } = useRouter();

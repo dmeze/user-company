@@ -6,16 +6,11 @@ const getUsers = (state: State) => state.user;
 
 export const getUsersSelector = createSelector(getUsers, ({ users }) => users);
 
-export const getOneUserSelector = (state: State, id: string) => {
+export const getUserSelector = (state: State, id: string) => {
   return createSelector(getUsersSelector, (users) => {
     return users.find((user) => user.id === id)!;
   });
 };
-
-export const getLoadingSelector = createSelector(
-  getUsers,
-  ({ loading }) => loading
-);
 
 export const getUserNamesSelector = createSelector(
   getUsersSelector,

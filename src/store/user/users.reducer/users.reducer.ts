@@ -1,9 +1,9 @@
 import { AnyAction } from "redux";
 
-import { SET_USERS, UPDATE_USER, UPDATE_USER_LOADING } from "../types";
+import { ADD_NEW_USER, SET_USERS, UPDATE_USER } from "../types";
 import { handleUpdateUser } from "../utils";
 
-const initialState = { users: [], loading: false };
+const initialState = { users: [] };
 
 export const usersReducer = (
   state = initialState,
@@ -20,10 +20,10 @@ export const usersReducer = (
         ...state,
         users: handleUpdateUser(state, payload),
       };
-    case UPDATE_USER_LOADING:
+    case ADD_NEW_USER:
       return {
         ...state,
-        loading: payload,
+        users: handleUpdateUser(state, payload),
       };
     default:
       return state;

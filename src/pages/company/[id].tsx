@@ -23,32 +23,37 @@ import {
   Edit,
   LocalPhone,
   SupervisedUserCircle,
+  PersonAddAltRounded,
 } from "@mui/icons-material";
 
 import Layout from "components/layout";
-import ModalCompany from "components/modals/modalCompany";
+import ModalsController from "components/modalsController/modalsController";
+
+import { ADD_USER, EDIT_COMPANY } from "components/modalsController/constants";
 
 import { wrapper } from "store/store";
-import { State } from "store/interfaces";
-import { getCompanySelector } from "store/companies/companies.selector";
 import { getCompanies } from "store/companies/companies.thunk";
+import { getCompanySelector } from "store/companies/companies.selector";
 
+import { State } from "store/interfaces";
 import { Company } from "types/company_interfaces";
 
-import styles from "styles/user.module.scss";
+import styles from "styles/company.module.scss";
 
-const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
-  company,
-}) => {
-  const [open, setOpen] = useState<boolean>(false);
+const Company: NextPage<{ company: Company }> = ({ company }) => {
+  const [open, setOpen] = useState<{ open: boolean; type: string }>({
+    open: false,
+    type: "",
+  });
 
-  const handleOpenModal = () => {
-    setOpen(true);
+  const handleOpenModal = (type: string) => {
+    setOpen({ open: true, type });
   };
 
-  const handleCloseModal = () => {
-    setOpen(false);
+  const handleCloseModal = (type: string) => {
+    setOpen({ open: false, type });
   };
+
   return (
     <Layout title={`${company.companyName || "Noname"} company`}>
       <Card className={styles.companyCard}>
@@ -59,15 +64,26 @@ const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
           title={company.companyName}
           className={styles.cardHeader}
           action={
-            <IconButton aria-label="settings" onClick={handleOpenModal}>
-              <Edit />
-            </IconButton>
+            <>
+              <IconButton
+                aria-label="settings"
+                onClick={() => handleOpenModal(ADD_USER)}
+              >
+                <PersonAddAltRounded />
+              </IconButton>
+              <IconButton
+                aria-label="settings"
+                onClick={() => handleOpenModal(EDIT_COMPANY)}
+              >
+                <Edit />
+              </IconButton>
+            </>
           }
         />
-        <ModalCompany
-          open={open}
+        <ModalsController
+          value={company}
           handleClose={handleCloseModal}
-          company={company}
+          openType={open}
         />
         <CardContent className={styles.cardBody}>
           <Stack>
@@ -118,8 +134,8 @@ const Company: NextPage<{ company: Company; companies: Array<Company> }> = ({
                   className={styles.companySelect}
                   value=""
                 >
-                  {company.users.map(({ name, id }) => (
-                    <MenuItem key={id} value={id}>
+                  {company.users.map(({ name, id }, index) => (
+                    <MenuItem key={index} value={id}>
                       {name}
                     </MenuItem>
                   ))}

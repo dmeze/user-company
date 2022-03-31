@@ -1,9 +1,4 @@
-import {
-  SET_USERS,
-  UPDATE_USER,
-  UPDATE_USER_LOADING,
-  USERS_ERROR,
-} from "../types";
+import { ADD_NEW_USER, SET_USERS, UPDATE_USER, USERS_ERROR } from "../types";
 import { User } from "types/user_interfaces";
 
 export const setUsers = (users: Array<User>) => {
@@ -27,9 +22,9 @@ export const updateUserAction = (user: User) => {
   };
 };
 
-export const updateUserLoader = (loading: boolean) => {
+export const addNewUserAction = (user: User) => {
   return {
-    type: UPDATE_USER_LOADING,
-    payload: loading,
+    type: ADD_NEW_USER,
+    payload: user,
   };
 };

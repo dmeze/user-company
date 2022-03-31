@@ -1,8 +1,12 @@
-export const constTitle = "User-Company";
-
 export const companyPath = "company";
 
 export const userPath = "user";
+
+export const editCompanyMessage = "Edit company";
+
+export const addUserMessage = "Add user";
+
+export const editUserMessage = "Edit user";
 
 export const companiesHeader = [
   {

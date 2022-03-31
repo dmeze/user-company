@@ -13,8 +13,3 @@ export const getCompanySelector = (state: State, id: string) => {
     return companies.find((company) => company.id === id)!;
   });
 };
-
-export const getLoadingSelector = createSelector(
-  getCompany,
-  ({ loading }) => loading
-);

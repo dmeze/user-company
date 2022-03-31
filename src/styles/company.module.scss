@@ -1,0 +1,56 @@
+.companySelect {
+  height: 60%;
+  top: 10px;
+}
+
+.companyLabel {
+  font-size: medium;
+  margin: 0;
+}
+
+.companyCard {
+  max-width: 580px;
+  width: 100%;
+}
+
+.cardBody {
+  padding: 5px 24px;
+  justify-content: center;
+  display: flex;
+}
+
+.cardHeader {
+  text-align: left;
+  font-size: medium;
+}
+
+.typography {
+  margin-left: 3px;
+  line-height: 2;
+  font-size: medium;
+}
+
+.textField {
+  display: flex;
+  width: 100%;
+}
+
+.textFieldBottom {
+  display: flex;
+  margin-top: 14px;
+}
+
+.button {
+  padding: 0;
+  color: black;
+  font-size: medium;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 400;
+  display: flex;
+  align-content: center;
+}
+
+.form {
+  min-width: 120px;
+  left: 40px;
+}

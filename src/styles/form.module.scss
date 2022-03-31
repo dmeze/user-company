@@ -1,0 +1,15 @@
+.form {
+  display: grid;
+  justify-content: center;
+}
+
+.field {
+  margin-top: 12px;
+  max-width: 200px;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
+  padding-left: 6px;
+}

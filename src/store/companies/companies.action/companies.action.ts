@@ -2,8 +2,8 @@ import { Company } from "types/company_interfaces";
 import {
   SET_COMPANIES,
   UPDATE_COMPANY,
-  UPDATE_COMPANY_LOADER,
   COMPANIES_ERROR,
+  ADD_USER,
 } from "../types";
 
 export const setCompanies = (companies: Array<Company>) => {
@@ -27,9 +27,9 @@ export const updateCompanyAction = (company: Company) => {
   };
 };
 
-export const updateCompanyLoader = (loading: boolean) => {
+export const addUser = (company: Company) => {
   return {
-    type: UPDATE_COMPANY_LOADER,
-    payload: loading,
+    type: ADD_USER,
+    payload: company,
   };
 };

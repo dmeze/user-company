@@ -1,15 +1,16 @@
 import type { NextPage } from "next";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Layout from "components/layout";
 import UnifyTable from "components/table";
 
-import { CompanyProps } from "types/company_interfaces";
 import { getCompaniesSelector } from "store/companies/companies.selector/companies.selector";
+import { getCompanies } from "store/companies/companies.thunk";
 
-import { companiesHeader, companyPath } from "../constants";
-import { useEffect } from "react";
-import { getCompanies } from "../store/companies/companies.thunk";
+import { companiesHeader, companyPath } from "constants/constants";
+
+import { CompanyProps } from "types/company_interfaces";
 
 const CompanyComponent: NextPage<CompanyProps> = () => {
   const dispatch = useDispatch();

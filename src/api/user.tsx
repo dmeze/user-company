@@ -34,3 +34,14 @@ export const loginApi = async (credentials: Credentials) => {
   });
   return camelCaseKeys(await res.json());
 };
+
+export const createUserApi = async (user: User) => {
+  const res = await fetch("http://localhost:3001/api/users/", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify(user),
+  });
+  return camelCaseKeys(await res.json());
+};

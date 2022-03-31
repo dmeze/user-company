@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { login } from "api/user";
+import { loginApi } from "api/user";
 import { User } from "types/user_interfaces";
 
 export default NextAuth({
@@ -12,8 +12,7 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // @ts-ignore
-        const user: User = await login(credentials!);
+        const user: User = await loginApi(credentials!);
         if (user) {
           return user;
         }

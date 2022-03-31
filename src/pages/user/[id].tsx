@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { connect } from "react-redux";
+
 import { NextPage } from "next";
 import Link from "next/link";
+
 import {
   Email,
   SupervisedUserCircle,
@@ -8,10 +11,6 @@ import {
   Apartment,
   Edit,
 } from "@mui/icons-material";
-
-import { User } from "types/user_interfaces";
-import Layout from "components/layout";
-import ModalUser from "components/modals";
 import {
   Card,
   Stack,
@@ -24,22 +23,31 @@ import {
   IconButton,
 } from "@mui/material";
 
-import styles from "styles/user.module.scss";
-import { connect } from "react-redux";
-import { getOneUserSelector } from "store/user/users.selector";
+import Layout from "components/layout";
+import ModalsController from "components/modalsController/modalsController";
+import { EDIT_USER } from "components/modalsController/constants";
+
+import { getUserSelector } from "store/user/users.selector";
 import { State } from "store/interfaces";
-import { wrapper } from "../../store/store";
-import { getUsers } from "../../store/user/users.thunk";
+import { wrapper } from "store/store";
+import { getUsers } from "store/user/users.thunk";
+
+import { User } from "types/user_interfaces";
+
+import styles from "styles/user.module.scss";
 
 const User: NextPage<{ user: User }> = ({ user }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<{ open: boolean; type: string }>({
+    open: false,
+    type: "",
+  });
 
-  const handleOpenModal = () => {
-    setOpen(true);
+  const handleOpenModal = (type: string) => {
+    setOpen({ open: true, type });
   };
 
-  const handleCloseModal = () => {
-    setOpen(false);
+  const handleCloseModal = (type: string) => {
+    setOpen({ open: false, type });
   };
 
   return (
@@ -51,12 +59,19 @@ const User: NextPage<{ user: User }> = ({ user }) => {
           subheader={user.surname}
           className={styles.cardHeader}
           action={
-            <IconButton aria-label="settings" onClick={handleOpenModal}>
+            <IconButton
+              aria-label="settings"
+              onClick={() => handleOpenModal(EDIT_USER)}
+            >
               <Edit />
             </IconButton>
           }
         />
-        <ModalUser open={open} handleClose={handleCloseModal} user={user} />
+        <ModalsController
+          value={user}
+          handleClose={handleCloseModal}
+          openType={open}
+        />
         <CardContent className={styles.cardBody}>
           <Stack direction="row" spacing={2}>
             <Stack spacing={2}>
@@ -150,7 +165,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 const mapStateToProps = (state: State, { id }: { id: string }) => {
   return {
-    user: getOneUserSelector(state, id)(state)!,
+    user: getUserSelector(state, id)(state)!,
   };
 };
 

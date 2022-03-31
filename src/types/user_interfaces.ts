@@ -1,6 +1,6 @@
 export interface User {
   _id?: string;
-  id: string;
+  id?: string;
   name: string;
   surname: string;
   phone: string;
@@ -17,7 +17,7 @@ export interface User {
   createdBy: Date;
   updatedBy: Date;
   role: string;
-  v: number;
+  v?: number;
 }
 
 export interface UserProps {
