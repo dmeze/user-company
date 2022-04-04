@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 
 import FormModal from "components/formModal";
@@ -39,55 +38,46 @@ import {
 } from "types/form_interfaces";
 import { Company } from "types/company_interfaces";
 import { User } from "types/user_interfaces";
+import { ModalsControllerProps } from "types/modal_interfaces";
 
 const ModalsController = ({
   value,
   openType,
   loading,
   handleClose,
-}: {
-  value: Company | User;
-  openType: { open: boolean; type: string };
-  loading: boolean;
-  handleClose: (type: string) => void;
-}) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+}: ModalsControllerProps) => {
   const { open, type } = openType;
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(loading);
-      handleClose(type);
-    }, 1500);
-  }, [loading]);
 
   const dispatch = useDispatch();
 
   const handleSubmitEditCompanyForm = (values: EditCompanyForm) => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     const newCompany: Company = {
       ...(value as Company),
       ...values,
       updatedBy: new Date(),
     };
-    dispatch(setLoading(true));
-    dispatch(updateCompany(newCompany));
+    setTimeout(() => {
+      dispatch(updateCompany(newCompany));
+      handleClose(type);
+    }, 1500);
   };
 
   const handleSubmitEditUserForm = (values: EditUserForm) => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     const newUser: User = {
       ...(value as User),
       ...values,
       updatedBy: new Date(),
     };
-    dispatch(setLoading(true));
-    dispatch(updateUser(newUser));
+    setTimeout(() => {
+      dispatch(updateUser(newUser));
+      handleClose(type);
+    }, 1500);
   };
 
   const handleSubmitAddForm = async (values: AddUserForm) => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     const user: User = {
       ...values,
       role: "default",
@@ -97,9 +87,11 @@ const ModalsController = ({
       updatedBy: new Date(),
     };
     (value as Company).users.push(user);
-    dispatch(setLoading(true));
-    dispatch(addUserToCompany(value as Company));
-    dispatch(addNewUser(user));
+    setTimeout(() => {
+      dispatch(addUserToCompany(value as Company));
+      dispatch(addNewUser(user));
+      handleClose(type);
+    }, 1500);
   };
 
   switch (type) {
@@ -107,7 +99,7 @@ const ModalsController = ({
       return (
         <FormModal
           open={open}
-          loading={isLoading}
+          loading={loading}
           message={addUserMessage}
           handleClose={() => handleClose(type)}
           handleSubmitForm={handleSubmitAddForm}
@@ -120,7 +112,7 @@ const ModalsController = ({
       return (
         <FormModal
           open={open}
-          loading={isLoading}
+          loading={loading}
           message={editCompanyMessage}
           handleClose={() => handleClose(type)}
           handleSubmitForm={handleSubmitEditCompanyForm}
@@ -134,7 +126,7 @@ const ModalsController = ({
       return (
         <FormModal
           open={open}
-          loading={isLoading}
+          loading={loading}
           message={editUserMessage}
           handleClose={() => handleClose(type)}
           handleSubmitForm={handleSubmitEditUserForm}

@@ -17,6 +17,7 @@ const MyApp = ({
 
   Router.events.on("routeChangeStart", () => setLoading(true));
   Router.events.on("routeChangeComplete", () => setLoading(false));
+
   return (
     <Provider store={store}>
       <SessionProvider session={session}>

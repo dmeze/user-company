@@ -22,3 +22,10 @@ export interface FormModalProps {
   value?: User | Company;
   validationSchema: validationSchema;
 }
+
+export interface ModalsControllerProps {
+  value: Company | User;
+  openType: { open: boolean; type: string };
+  loading: boolean;
+  handleClose: (type: string) => void;
+}

@@ -1,94 +1,176 @@
-import { useState, ChangeEvent } from "react";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import { useMemo, useState } from "react";
 
+import {
+  Column,
+  useTable,
+  useSortBy,
+  usePagination,
+  HeaderGroup,
+  Cell,
+  Row,
+} from "react-table";
 import Link from "next/link";
 
-import styles from "styles/table.module.scss";
-import { Fragment } from "preact";
+import {
+  Paper,
+  TableContainer,
+  Table as TableUi,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableFooter,
+  TablePagination,
+} from "@mui/material";
+import { ArrowDropUpRounded, ArrowDropDownRounded } from "@mui/icons-material";
 
-const UnifyTable = ({
-  header,
-  rows,
+import { User } from "types/user_interfaces";
+
+import styles from "styles/table.module.scss";
+
+const Table = ({
+  columns,
+  data,
   path,
   userId,
 }: {
-  header: Array<any>;
-  rows: Array<any>;
+  columns: readonly Column<{}>[];
+  data: readonly {}[];
   path: string;
-  userId: string | undefined | string[];
+  userId?: string;
 }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const memoizedColumns = useMemo(() => columns, [columns]);
+  const memoizedData = useMemo(() => data, [data]);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+    setPageSize,
+    gotoPage,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns: memoizedColumns,
+      data: memoizedData,
+      initialState: { pageIndex: 0, pageSize: 5 },
+    },
+    useSortBy,
+    usePagination
+  );
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
 
-  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
+    <Paper className={styles.paper}>
+      <TableContainer>
+        <TableUi stickyHeader aria-label="sticky table" {...getTableProps()}>
           <TableHead>
-            <TableRow>
-              {header.map(({ id, label }: { id: number; label: string }) => (
-                <TableCell key={id}>{label}</TableCell>
-              ))}
-            </TableRow>
+            {headerGroups.map(
+              ({ getHeaderGroupProps, headers }: HeaderGroup) => {
+                const { key, ...restHeaderGroupProps } = getHeaderGroupProps();
+                return (
+                  <TableRow key={key} {...restHeaderGroupProps}>
+                    {headers.map(
+                      ({
+                        getHeaderProps,
+                        render,
+                        isSorted,
+                        isSortedDesc,
+                        getSortByToggleProps,
+                      }) => {
+                        const { key, ...restHeaderProps } = getHeaderProps(
+                          getSortByToggleProps()
+                        );
+                        return (
+                          <TableCell
+                            className={styles.tableCell}
+                            key={key}
+                            {...restHeaderProps}
+                          >
+                            {render("Header")}
+                            {isSorted ? (
+                              isSortedDesc ? (
+                                <ArrowDropUpRounded className={styles.icon} />
+                              ) : (
+                                <ArrowDropDownRounded className={styles.icon} />
+                              )
+                            ) : (
+                              ""
+                            )}
+                          </TableCell>
+                        );
+                      }
+                    )}
+                  </TableRow>
+                );
+              }
+            )}
           </TableHead>
-          <TableBody>
-            {rows.map((row) => {
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row: Row) => {
+              prepareRow(row);
+              const { key, ...restRowProps } = row.getRowProps();
               return (
                 <TableRow
+                  key={key}
+                  {...restRowProps}
                   className={
-                    row.id === userId ? styles.tableRowHover : styles.tableRow
+                    userId === (row.original as User).id
+                      ? styles.tableRowHover
+                      : styles.tableRow
                   }
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={row.id}
                 >
-                  {header.map(({ id, key }: { id: number; key: string }) => {
+                  {row.cells.map(({ getCellProps, render }: Cell) => {
+                    const { key, ...restCellProps } = getCellProps();
                     return (
-                      <Fragment key={id}>
-                        <Link href={`/${path}/[id]`} as={`/${path}/${row.id}`}>
-                          <TableCell key={id}>
-                            {typeof row[key] === "object"
-                              ? row[key].companyName
-                              : key === "createdBy" || key === "updatedBy"
-                              ? new Date(row[key]).toDateString()
-                              : row[key]}
-                          </TableCell>
-                        </Link>
-                      </Fragment>
+                      <Link
+                        passHref={true}
+                        key={key}
+                        href={`/${path}/[id]`}
+                        as={`/${path}/${(row.original as User).id}`}
+                      >
+                        <TableCell
+                          className={styles.tableCell}
+                          {...restCellProps}
+                        >
+                          {render("Cell")}
+                        </TableCell>
+                      </Link>
                     );
                   })}
                 </TableRow>
               );
             })}
           </TableBody>
-        </Table>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10]}
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={pageIndex}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "rows per page",
+                  },
+                  native: true,
+                }}
+                onPageChange={(event, newPage) => {
+                  gotoPage(newPage);
+                }}
+                onRowsPerPageChange={(event) => {
+                  setPageSize(Number(event.target.value));
+                  setRowsPerPage(Number(event.target.value));
+                }}
+              />
+            </TableRow>
+          </TableFooter>
+        </TableUi>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </Paper>
   );
 };
 
-export default UnifyTable;
+export default Table;
