@@ -3,7 +3,7 @@ export interface SearchProps {
 }
 
 export interface Name {
-  id: string;
+  id?: string;
   name: string;
 }
 
