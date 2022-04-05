@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { connect } from "react-redux";
+
 import { NextPage } from "next";
 import Link from "next/link";
-import { connect } from "react-redux";
+import { useSession } from "next-auth/react";
 
 import {
   Avatar,
@@ -46,6 +48,10 @@ const Company: NextPage<{ company: Company }> = ({ company }) => {
     type: "",
   });
 
+  const { data: session } = useSession();
+
+  console.log(session);
+
   const handleOpenModal = (type: string) => {
     setOpen({ open: true, type });
   };
@@ -64,20 +70,24 @@ const Company: NextPage<{ company: Company }> = ({ company }) => {
           title={company.companyName}
           className={styles.cardHeader}
           action={
-            <>
-              <IconButton
-                aria-label="settings"
-                onClick={() => handleOpenModal(ADD_USER)}
-              >
-                <PersonAddAltRounded />
-              </IconButton>
-              <IconButton
-                aria-label="settings"
-                onClick={() => handleOpenModal(EDIT_COMPANY)}
-              >
-                <Edit />
-              </IconButton>
-            </>
+            session &&
+            session.role === "admin" &&
+            session.id === company.creator.id && (
+              <>
+                <IconButton
+                  aria-label="settings"
+                  onClick={() => handleOpenModal(ADD_USER)}
+                >
+                  <PersonAddAltRounded />
+                </IconButton>
+                <IconButton
+                  aria-label="settings"
+                  onClick={() => handleOpenModal(EDIT_COMPANY)}
+                >
+                  <Edit />
+                </IconButton>
+              </>
+            )
           }
         />
         <ModalsController

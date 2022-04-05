@@ -84,24 +84,26 @@ const Layout = ({ children, title }: LayoutProps) => {
             >
               {title}
             </Typography>
-            {pathname === COMPANIES_PATH && (
-              <>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={() => handleOpenModal(ADD_COMPANY)}
-                  color="inherit"
-                >
-                  <DomainAddRounded />
-                </IconButton>
-                <ModalsController
-                  handleClose={handleCloseModal}
-                  openType={openModal}
-                />
-              </>
-            )}
+            {pathname === COMPANIES_PATH &&
+              session &&
+              session.role === "admin" && (
+                <>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={() => handleOpenModal(ADD_COMPANY)}
+                    color="inherit"
+                  >
+                    <DomainAddRounded />
+                  </IconButton>
+                  <ModalsController
+                    handleClose={handleCloseModal}
+                    openType={openModal}
+                  />
+                </>
+              )}
             {session ? (
               <>
                 <IconButton
