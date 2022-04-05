@@ -140,12 +140,9 @@ const Layout = ({ children, title }: LayoutProps) => {
                 </Menu>
               </>
             ) : (
-              <>
-                <Button variant="outlined" onClick={() => signIn()}>
-                  Sign in
-                </Button>
-                <Button variant="contained">Sign up</Button>
-              </>
+              <Button variant="contained" onClick={() => signIn()}>
+                Sign in
+              </Button>
             )}
           </Toolbar>
         </AppBar>
