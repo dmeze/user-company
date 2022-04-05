@@ -4,6 +4,7 @@ import {
   UPDATE_COMPANY,
   COMPANIES_ERROR,
   ADD_USER,
+  ADD_NEW_COMPANY,
 } from "../types";
 
 export const setCompanies = (companies: Array<Company>) => {
@@ -30,6 +31,13 @@ export const updateCompanyAction = (company: Company) => {
 export const addUser = (company: Company) => {
   return {
     type: ADD_USER,
+    payload: company,
+  };
+};
+
+export const addNewCompanyAction = (company: Company) => {
+  return {
+    type: ADD_NEW_COMPANY,
     payload: company,
   };
 };

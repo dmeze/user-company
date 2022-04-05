@@ -3,6 +3,7 @@ import "yup-phone";
 
 import {
   AddUserForm,
+  AddCompanyForm,
   EditCompanyForm,
   EditUserForm,
   Field,
@@ -11,6 +12,8 @@ import { Company } from "types/company_interfaces";
 import { User } from "types/user_interfaces";
 
 export const ADD_USER = "ADD_USER";
+
+export const ADD_COMPANY = "ADD_COMPANY";
 
 export const EDIT_COMPANY = "EDIT_COMPANY";
 
@@ -22,6 +25,12 @@ export const addUserInitialValues: AddUserForm = {
   phone: "",
   email: "",
   password: "",
+};
+
+export const addCompanyInitialValues: AddCompanyForm = {
+  address: "",
+  companyName: "",
+  phone: "",
 };
 
 export const editCompanyInitialValues: (
@@ -74,6 +83,24 @@ export const addUserFields: Array<Field> = [
   },
 ];
 
+export const addCompanyFields: Array<Field> = [
+  {
+    id: "address",
+    label: "Address",
+    type: "text",
+  },
+  {
+    id: "companyName",
+    label: "Company Name",
+    type: "text",
+  },
+  {
+    id: "phone",
+    label: "Phone",
+    type: "text",
+  },
+];
+
 export const editCompanyFields: Array<Field> = [
   {
     id: "companyName",
@@ -119,6 +146,24 @@ export const addUserValidationSchema = yup.object().shape({
     .matches(/[0-9]/, "Password must contain numbers.")
     .matches(/[A-Z]/, "Password must contain at least one big letter.")
     .required("Password is required!"),
+});
+
+export const addCompanyValidationSchema = yup.object().shape({
+  address: yup
+    .string()
+    .min(2, "Address is too short")
+    .max(20, "Address is too long")
+    .required("Address is required!"),
+  companyName: yup
+    .string()
+    .min(2, "Company name is too short")
+    .max(20, "Company name is too long")
+    .matches(/^[aA-zZ\s]+$/, "Company name must contain only letters")
+    .required("Company name is required!"),
+  phone: yup
+    .string()
+    .phone("UA", true, "Phone format is +380*********")
+    .required("Phone is required!"),
 });
 
 export const editUserValidationSchema = addUserValidationSchema;

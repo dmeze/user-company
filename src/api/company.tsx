@@ -23,3 +23,14 @@ export const updateCompanyApi = async (company: Company) => {
     body: JSON.stringify(company),
   });
 };
+
+export const createCompanyApi = async (company: Company) => {
+  const res = await fetch("http://localhost:3001/api/companies/", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify(company),
+  });
+  return camelCaseKeys(await res.json());
+};

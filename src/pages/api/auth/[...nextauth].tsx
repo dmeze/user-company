@@ -6,7 +6,7 @@ import { User } from "types/user_interfaces";
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: "Login via credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },

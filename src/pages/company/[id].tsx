@@ -117,30 +117,38 @@ const Company: NextPage<{ company: Company }> = ({ company }) => {
                   variant="overline"
                   component="div"
                 >
-                  <Link href="/user/[id]" as={`/user/${company.creator.id}`}>
+                  <Link
+                    passHref={true}
+                    href={`/user/[id]`}
+                    as={`/user/${company.creator.id}`}
+                  >
                     <Button variant="text" className={styles.button}>
                       {company.creator.creatorName}
                     </Button>
                   </Link>
                 </Typography>
               </div>
-              <FormControl className={styles.form}>
-                <InputLabel id="labelId" className={styles.companyLabel}>
-                  Users
-                </InputLabel>
-                <Select
-                  labelId="labelId"
-                  label="Users"
-                  className={styles.companySelect}
-                  value=""
-                >
-                  {company.users.map(({ name, id }, index) => (
-                    <MenuItem key={index} value={id}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {company.users.length ? (
+                <FormControl className={styles.form}>
+                  <InputLabel id="labelId" className={styles.companyLabel}>
+                    Users
+                  </InputLabel>
+                  <Select
+                    labelId="labelId"
+                    label="Users"
+                    className={styles.companySelect}
+                    value=""
+                  >
+                    {company.users.map(({ name, id }, index) => (
+                      <MenuItem key={index} value={id}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                ""
+              )}
             </Stack>
           </Stack>
         </CardContent>

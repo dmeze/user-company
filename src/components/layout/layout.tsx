@@ -8,21 +8,33 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { Button, Menu, MenuItem } from "@mui/material";
-import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Menu as MenuIcon,
+  DomainAddRounded,
+} from "@mui/icons-material";
 
 import Sidebar from "./drawer";
 import { AppBar, Main } from "./styled.layout";
 import { LayoutProps } from "types/layout_interfaces";
 
 import styles from "styles/layout.module.scss";
+import { COMPANIES_PATH } from "constants/constants";
+import ModalsController from "components/modalsController/modalsController";
+import { ADD_COMPANY } from "components/modalsController/constants";
 
 const Layout = ({ children, title }: LayoutProps) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const [openModal, setOpenModal] = useState<{ open: boolean; type: string }>({
+    open: false,
+    type: "",
+  });
+
   const { data: session } = useSession();
 
-  const router = useRouter();
+  const { push, pathname } = useRouter();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -38,6 +50,14 @@ const Layout = ({ children, title }: LayoutProps) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenModal = (type: string) => {
+    setOpenModal({ open: true, type });
+  };
+
+  const handleCloseModal = (type: string) => {
+    setOpenModal({ open: false, type });
   };
 
   return (
@@ -64,6 +84,24 @@ const Layout = ({ children, title }: LayoutProps) => {
             >
               {title}
             </Typography>
+            {pathname === COMPANIES_PATH && (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => handleOpenModal(ADD_COMPANY)}
+                  color="inherit"
+                >
+                  <DomainAddRounded />
+                </IconButton>
+                <ModalsController
+                  handleClose={handleCloseModal}
+                  openType={openModal}
+                />
+              </>
+            )}
             {session ? (
               <>
                 <IconButton
@@ -93,7 +131,7 @@ const Layout = ({ children, title }: LayoutProps) => {
                 >
                   <MenuItem
                     onClick={() => {
-                      router.push(`/user/${session.id}`);
+                      push(`/user/${session.id}`);
                     }}
                   >
                     Profile
@@ -102,12 +140,9 @@ const Layout = ({ children, title }: LayoutProps) => {
                 </Menu>
               </>
             ) : (
-              <>
-                <Button variant="outlined" onClick={() => signIn()}>
-                  Sign in
-                </Button>
-                <Button variant="contained">Sign up</Button>
-              </>
+              <Button variant="contained" onClick={() => signIn()}>
+                Sign in
+              </Button>
             )}
           </Toolbar>
         </AppBar>

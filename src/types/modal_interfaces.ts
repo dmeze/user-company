@@ -24,7 +24,7 @@ export interface FormModalProps {
 }
 
 export interface ModalsControllerProps {
-  value: Company | User;
+  value?: Company | User;
   openType: { open: boolean; type: string };
   loading: boolean;
   handleClose: (type: string) => void;

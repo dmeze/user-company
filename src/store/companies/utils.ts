@@ -8,3 +8,10 @@ export const handleUpdateCompany = (
     return mappedCompany.id === company.id ? company : mappedCompany;
   });
 };
+
+export const handleAddCompany = (
+  { companies }: { companies: Array<Company> },
+  company: Company
+) => {
+  return companies.concat(company);
+};

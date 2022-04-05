@@ -3,6 +3,7 @@ import { connect, useDispatch } from "react-redux";
 import FormModal from "components/formModal";
 
 import {
+  addNewCompany,
   addUserToCompany,
   updateCompany,
 } from "store/companies/companies.thunk";
@@ -23,15 +24,21 @@ import {
   editUserInitialValues,
   editUserFields,
   editUserValidationSchema,
+  ADD_COMPANY,
+  addCompanyFields,
+  addCompanyValidationSchema,
+  addCompanyInitialValues,
 } from "components/modalsController/constants";
 import {
   addUserMessage,
+  addCompanyMessage,
   editUserMessage,
   editCompanyMessage,
 } from "constants/constants";
 
 import { State } from "store/interfaces";
 import {
+  AddCompanyForm,
   AddUserForm,
   EditCompanyForm,
   EditUserForm,
@@ -39,6 +46,7 @@ import {
 import { Company } from "types/company_interfaces";
 import { User } from "types/user_interfaces";
 import { ModalsControllerProps } from "types/modal_interfaces";
+import { useSession } from "next-auth/react";
 
 const ModalsController = ({
   value,
@@ -49,6 +57,8 @@ const ModalsController = ({
   const { open, type } = openType;
 
   const dispatch = useDispatch();
+
+  const { data: session } = useSession();
 
   const handleSubmitEditCompanyForm = (values: EditCompanyForm) => {
     dispatch(setLoading(true));
@@ -76,13 +86,13 @@ const ModalsController = ({
     }, 1500);
   };
 
-  const handleSubmitAddForm = async (values: AddUserForm) => {
+  const handleSubmitAddUserForm = async (values: AddUserForm) => {
     dispatch(setLoading(true));
     const user: User = {
       ...values,
       role: "default",
-      company: { companyName: (value as Company).companyName, id: value.id! },
-      creator: value.creator,
+      company: { companyName: (value as Company).companyName, id: value!.id! },
+      creator: value!.creator,
       createdBy: new Date(),
       updatedBy: new Date(),
     };
@@ -90,6 +100,24 @@ const ModalsController = ({
     setTimeout(() => {
       dispatch(addUserToCompany(value as Company));
       dispatch(addNewUser(user));
+      handleClose(type);
+    }, 1500);
+  };
+
+  const handleSubmitAddCompanyForm = async (values: AddCompanyForm) => {
+    dispatch(setLoading(true));
+    const company: Company = {
+      ...values,
+      users: [],
+      createdBy: new Date(),
+      updatedBy: new Date(),
+      creator: {
+        creatorName: session!.user!.name as string,
+        id: session!.id as string,
+      },
+    };
+    setTimeout(() => {
+      dispatch(addNewCompany(company));
       handleClose(type);
     }, 1500);
   };
@@ -102,10 +130,23 @@ const ModalsController = ({
           loading={loading}
           message={addUserMessage}
           handleClose={() => handleClose(type)}
-          handleSubmitForm={handleSubmitAddForm}
+          handleSubmitForm={handleSubmitAddUserForm}
           validationSchema={addUserValidationSchema}
           initialValues={addUserInitialValues}
           fields={addUserFields}
+        />
+      );
+    case ADD_COMPANY:
+      return (
+        <FormModal
+          open={open}
+          loading={loading}
+          message={addCompanyMessage}
+          handleClose={() => handleClose(type)}
+          handleSubmitForm={handleSubmitAddCompanyForm}
+          validationSchema={addCompanyValidationSchema}
+          initialValues={addCompanyInitialValues}
+          fields={addCompanyFields}
         />
       );
     case EDIT_COMPANY:
