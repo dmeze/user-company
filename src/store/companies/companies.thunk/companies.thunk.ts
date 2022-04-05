@@ -1,11 +1,16 @@
 import { Dispatch } from "redux";
 
-import { getCompaniesApi, updateCompanyApi } from "api/company";
+import {
+  createCompanyApi,
+  getCompaniesApi,
+  updateCompanyApi,
+} from "api/company";
 import {
   setCompanies,
   companiesError,
   updateCompanyAction,
   addUser,
+  addNewCompanyAction,
 } from "store/companies/companies.action";
 import { setLoading } from "store/loading/loading.action";
 
@@ -35,6 +40,18 @@ export const addUserToCompany =
     try {
       await updateCompanyApi(company);
       return dispatch(addUser(company));
+    } catch (e: unknown) {
+      return dispatch(companiesError(e));
+    }
+  };
+
+export const addNewCompany =
+  (company: Company) => async (dispatch: Dispatch) => {
+    try {
+      return createCompanyApi(company).then((res) => {
+        dispatch(addNewCompanyAction(res));
+        dispatch(setLoading(false));
+      });
     } catch (e: unknown) {
       return dispatch(companiesError(e));
     }

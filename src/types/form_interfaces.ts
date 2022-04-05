@@ -37,6 +37,12 @@ export interface AddUserForm {
   email: string;
 }
 
+export interface AddCompanyForm {
+  companyName: string;
+  address: string;
+  phone: string;
+}
+
 export interface EditCompanyForm {
   companyName: string;
   address: string;

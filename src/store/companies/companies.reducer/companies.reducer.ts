@@ -1,9 +1,16 @@
 import { AnyAction } from "redux";
 
-import { ADD_USER, SET_COMPANIES, UPDATE_COMPANY } from "../types";
-import { handleUpdateCompany } from "../utils";
+import {
+  ADD_NEW_COMPANY,
+  ADD_USER,
+  SET_COMPANIES,
+  UPDATE_COMPANY,
+} from "../types";
+import { handleAddCompany, handleUpdateCompany } from "store/companies/utils";
 
-const initialState = { companies: [] };
+import { Company } from "types/company_interfaces";
+
+const initialState: { companies: Array<Company> } = { companies: [] };
 
 export const companiesReducer = (
   state = initialState,
@@ -24,6 +31,11 @@ export const companiesReducer = (
       return {
         ...state,
         companies: handleUpdateCompany(state, payload),
+      };
+    case ADD_NEW_COMPANY:
+      return {
+        ...state,
+        companies: handleAddCompany(state, payload),
       };
     default:
       return state;
