@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { NextPage } from "next";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 import {
   Email,
@@ -42,6 +43,8 @@ const User: NextPage<{ user: User }> = ({ user }) => {
     type: "",
   });
 
+  const { data: session } = useSession();
+
   const handleOpenModal = (type: string) => {
     setOpen({ open: true, type });
   };
@@ -49,6 +52,11 @@ const User: NextPage<{ user: User }> = ({ user }) => {
   const handleCloseModal = (type: string) => {
     setOpen({ open: false, type });
   };
+
+  const edit = !!(
+    (session && session.role === "admin" && session.id === user.creator.id) ||
+    (session && session.id === user.id)
+  );
 
   return (
     <Layout title={`${user.name || "Noname"}`}>
@@ -59,12 +67,14 @@ const User: NextPage<{ user: User }> = ({ user }) => {
           subheader={user.surname}
           className={styles.cardHeader}
           action={
-            <IconButton
-              aria-label="settings"
-              onClick={() => handleOpenModal(EDIT_USER)}
-            >
-              <Edit />
-            </IconButton>
+            edit && (
+              <IconButton
+                aria-label="settings"
+                onClick={() => handleOpenModal(EDIT_USER)}
+              >
+                <Edit />
+              </IconButton>
+            )
           }
         />
         <ModalsController
@@ -104,7 +114,11 @@ const User: NextPage<{ user: User }> = ({ user }) => {
                   variant="overline"
                   component="div"
                 >
-                  <Link href="/user/[id]" as={`/user/${user.creator.id}`}>
+                  <Link
+                    passHref
+                    href={`/user/[id]`}
+                    as={`/user/${user.creator.id}`}
+                  >
                     <Button variant="text" className={styles.button}>
                       {user.creator.creatorName}
                     </Button>
@@ -118,7 +132,11 @@ const User: NextPage<{ user: User }> = ({ user }) => {
                   variant="overline"
                   component="div"
                 >
-                  <Link href="/company/[id]" as={`/company/${user.company.id}`}>
+                  <Link
+                    passHref
+                    href={`/company/[id]`}
+                    as={`/company/${user.company.id}`}
+                  >
                     <Button variant="text" className={styles.button}>
                       {user.company.companyName}
                     </Button>
