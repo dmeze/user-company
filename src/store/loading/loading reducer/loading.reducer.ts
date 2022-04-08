@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import { SET_LOADING } from "../typex";
+import { SET_LOADING } from "../types";
 
 const initialState = { loading: false };
 

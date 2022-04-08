@@ -2,11 +2,12 @@ import { AnyAction } from "redux";
 
 import { ADD_NEW_USER, SET_USERS, UPDATE_USER } from "../types";
 import { handleUpdateUser } from "../utils";
+import { User } from "types/user_interfaces";
 
 const initialState = { users: [] };
 
 export const usersReducer = (
-  state = initialState,
+  state: { users: Array<User> } = initialState,
   { type, payload }: AnyAction
 ) => {
   switch (type) {
