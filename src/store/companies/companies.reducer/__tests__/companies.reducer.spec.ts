@@ -1,4 +1,10 @@
 import { companiesReducer } from "store/companies/companies.reducer";
+import {
+  addNewCompanyAction,
+  addUser,
+  setCompanies,
+  updateCompanyAction,
+} from "store/companies/companies.action";
 
 import {
   ADD_NEW_COMPANY,
@@ -7,39 +13,13 @@ import {
   UPDATE_COMPANY,
 } from "store/companies/types";
 
-const newCompanies = [{ companyName: "newTestCompany" }];
+import { Company } from "types/company_interfaces";
+
+const testCompany = { companyName: "newTestCompany" };
+const newCompanies = [testCompany];
 const initialState = { companies: [] };
 const companies = [{ companyName: "testCompanyName" }];
 const testState = { companies };
-
-const {
-  DEFAULT_STATE_ACTION,
-  SET_COMPANIES_ACTION,
-  UPDATE_COMPANY_ACTION,
-  ADD_NEW_COMPANY_ACTION,
-  ADD_USER_ACTION,
-} = {
-  DEFAULT_STATE_ACTION: {
-    type: "default state",
-    payload: {},
-  },
-  SET_COMPANIES_ACTION: {
-    type: SET_COMPANIES,
-    payload: companies,
-  },
-  UPDATE_COMPANY_ACTION: {
-    type: UPDATE_COMPANY,
-    payload: newCompanies,
-  },
-  ADD_NEW_COMPANY_ACTION: {
-    type: ADD_NEW_COMPANY,
-    payload: newCompanies,
-  },
-  ADD_USER_ACTION: {
-    type: ADD_USER,
-    payload: newCompanies,
-  },
-};
 
 const {
   DEFAULT_STATE_EXPECTED,
@@ -62,13 +42,16 @@ jest.mock("store/companies/utils", () => ({
 
 describe("companies reducer", () => {
   it.each`
-    testName           | state           | action                    | expected
-    ${"default state"} | ${undefined}    | ${DEFAULT_STATE_ACTION}   | ${DEFAULT_STATE_EXPECTED}
-    ${SET_COMPANIES}   | ${initialState} | ${SET_COMPANIES_ACTION}   | ${SET_COMPANIES_EXPECTED}
-    ${UPDATE_COMPANY}  | ${testState}    | ${UPDATE_COMPANY_ACTION}  | ${UPDATE_COMPANY_EXPECTED}
-    ${ADD_NEW_COMPANY} | ${testState}    | ${ADD_NEW_COMPANY_ACTION} | ${ADD_NEW_COMPANY_EXPECTED}
-    ${ADD_USER}        | ${testState}    | ${ADD_USER_ACTION}        | ${ADD_USER_EXPECTED}
-  `("$testName", ({ state, action, expected }) => {
-    expect(companiesReducer(state, action)).toEqual(expected);
-  });
+    testName           | state           | action                                         | expected
+    ${"default state"} | ${undefined}    | ${{}}                                          | ${DEFAULT_STATE_EXPECTED}
+    ${SET_COMPANIES}   | ${initialState} | ${setCompanies(companies as Company[])}        | ${SET_COMPANIES_EXPECTED}
+    ${UPDATE_COMPANY}  | ${testState}    | ${updateCompanyAction(testCompany as Company)} | ${UPDATE_COMPANY_EXPECTED}
+    ${ADD_NEW_COMPANY} | ${testState}    | ${addNewCompanyAction(testCompany as Company)} | ${ADD_NEW_COMPANY_EXPECTED}
+    ${ADD_USER}        | ${testState}    | ${addUser(testCompany as Company)}             | ${ADD_USER_EXPECTED}
+  `(
+    "Should update the store according to $testName action",
+    ({ state, action, expected }) => {
+      expect(companiesReducer(state, action)).toEqual(expected);
+    }
+  );
 });

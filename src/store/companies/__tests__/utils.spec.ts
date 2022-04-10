@@ -2,7 +2,7 @@ import { handleAddCompany, handleUpdateCompany } from "store/companies/utils";
 
 import { Company } from "types/company_interfaces";
 
-describe("companies utils", () => {
+describe("store/companies/utils", () => {
   const state = {
     companies: [
       { companyName: "testCompany", id: "testId", phone: "testPhone" },
@@ -14,22 +14,26 @@ describe("companies utils", () => {
     phone: "testPhone",
   };
 
-  it("handleUpdateCompany should return companies array", () => {
-    expect(
-      handleUpdateCompany(
-        state as { companies: Array<Company> },
-        newCompany as Company
-      )
-    ).toEqual([newCompany]);
+  describe("handleUpdateCompany", () => {
+    it("Should return companies array", () => {
+      expect(
+        handleUpdateCompany(
+          state as { companies: Array<Company> },
+          newCompany as Company
+        )
+      ).toEqual([newCompany]);
+    });
   });
 
-  it("handleAddCompany should add company to companies array", () => {
-    const expectedState = [...state.companies, newCompany];
-    expect(
-      handleAddCompany(
-        state as { companies: Array<Company> },
-        newCompany as Company
-      )
-    ).toEqual(expectedState);
+  describe("handleAddCompany", () => {
+    it("Should add company to companies array", () => {
+      const expectedState = [...state.companies, newCompany];
+      expect(
+        handleAddCompany(
+          state as { companies: Array<Company> },
+          newCompany as Company
+        )
+      ).toEqual(expectedState);
+    });
   });
 });

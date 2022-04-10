@@ -20,14 +20,14 @@ const store = mockStore(state);
 describe("user selectors", () => {
   const testState = store.getState();
   it.each`
-    testName                  | selector                | arg          | expected     | id
-    ${"rootUsersSelector"}    | ${rootUsersSelector}    | ${testState} | ${{ users }} | ${null}
-    ${"getUsersSelector"}     | ${getUsersSelector}     | ${testState} | ${users}     | ${null}
-    ${"getUserSelector"}      | ${getUserSelector}      | ${testState} | ${user}      | ${id}
-    ${"getUserNamesSelector"} | ${getUserNamesSelector} | ${testState} | ${names}     | ${null}
-  `("$testName", ({ selector, arg, expected, id }) => {
+    testName                  | selector                | expected     | id
+    ${"rootUsersSelector"}    | ${rootUsersSelector}    | ${{ users }} | ${null}
+    ${"getUsersSelector"}     | ${getUsersSelector}     | ${users}     | ${null}
+    ${"getUserSelector"}      | ${getUserSelector}      | ${user}      | ${id}
+    ${"getUserNamesSelector"} | ${getUserNamesSelector} | ${names}     | ${null}
+  `("$testName", ({ selector, expected, id }) => {
     id
-      ? expect(selector(arg, id)(arg)).toEqual(expected)
-      : expect(selector(arg)).toEqual(expected);
+      ? expect(selector(testState, id)(testState)).toEqual(expected)
+      : expect(selector(testState)).toEqual(expected);
   });
 });
