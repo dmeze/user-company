@@ -1,4 +1,5 @@
 import { connect, useDispatch } from "react-redux";
+import { useSession } from "next-auth/react";
 
 import FormModal from "components/formModal";
 
@@ -46,7 +47,6 @@ import {
 import { Company } from "types/company_interfaces";
 import { User } from "types/user_interfaces";
 import { ModalsControllerProps } from "types/modal_interfaces";
-import { useSession } from "next-auth/react";
 
 const ModalsController = ({
   value,

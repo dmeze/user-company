@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
 import { State } from "store/interfaces";
 
-const getCompany = (state: State) => state.company;
+export const rootCompaniesSelector = (state: State) => state.company;
 
 export const getCompaniesSelector = createSelector(
-  getCompany,
+  rootCompaniesSelector,
   ({ companies }) => companies
 );
 

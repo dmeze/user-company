@@ -1,4 +1,4 @@
-import { SET_LOADING } from "../typex";
+import { SET_LOADING } from "../types";
 
 export const setLoading = (loading: boolean) => {
   return {
