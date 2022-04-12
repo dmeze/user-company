@@ -6,7 +6,7 @@ describe("loading action", () => {
 
   const expected = { type: SET_LOADING, payload };
 
-  it(`${SET_LOADING}`, () => {
+  it(`Should return ${SET_LOADING} action object`, () => {
     expect(setLoading(payload)).toEqual(expected);
   });
 });

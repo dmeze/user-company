@@ -22,9 +22,12 @@ describe("companies selectors", () => {
     ${"rootCompaniesSelector"} | ${rootCompaniesSelector} | ${{ companies }} | ${null}
     ${"getCompaniesSelector"}  | ${getCompaniesSelector}  | ${companies}     | ${null}
     ${"getCompanySelector"}    | ${getCompanySelector}    | ${company}       | ${id}
-  `("$testName", ({ selector, expected, id }) => {
-    id
-      ? expect(selector(testState, id)(testState)).toEqual(expected)
-      : expect(selector(testState)).toEqual(expected);
-  });
+  `(
+    "Should return data from the store as $testName",
+    ({ selector, expected, id }) => {
+      id
+        ? expect(selector(testState, id)(testState)).toEqual(expected)
+        : expect(selector(testState)).toEqual(expected);
+    }
+  );
 });

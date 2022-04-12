@@ -26,7 +26,7 @@ describe("companies action", () => {
     ${updateCompanyAction} | ${company}   | ${UPDATE_COMPANY}
     ${addNewCompanyAction} | ${company}   | ${ADD_NEW_COMPANY}
     ${addUser}             | ${company}   | ${ADD_USER}
-  `("$type", ({ action, payload, type }) => {
+  `("Should return $type action", ({ action, payload, type }) => {
     expect(action(payload)).toEqual({ type, payload });
   });
 });

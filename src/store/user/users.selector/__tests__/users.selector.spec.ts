@@ -25,9 +25,12 @@ describe("user selectors", () => {
     ${"getUsersSelector"}     | ${getUsersSelector}     | ${users}     | ${null}
     ${"getUserSelector"}      | ${getUserSelector}      | ${user}      | ${id}
     ${"getUserNamesSelector"} | ${getUserNamesSelector} | ${names}     | ${null}
-  `("$testName", ({ selector, expected, id }) => {
-    id
-      ? expect(selector(testState, id)(testState)).toEqual(expected)
-      : expect(selector(testState)).toEqual(expected);
-  });
+  `(
+    "Should return data from the store as $testName",
+    ({ selector, expected, id }) => {
+      id
+        ? expect(selector(testState, id)(testState)).toEqual(expected)
+        : expect(selector(testState)).toEqual(expected);
+    }
+  );
 });

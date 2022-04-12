@@ -15,7 +15,10 @@ describe("loading reducer", () => {
     testName           | state           | action                | expected
     ${"default state"} | ${undefined}    | ${DEFAULT_STATE}      | ${initialState}
     ${SET_LOADING}     | ${initialState} | ${SET_LOADING_ACTION} | ${expectedSetLoading}
-  `("$testName", ({ state, action, expected }) => {
-    expect(loadingReducer(state, action)).toEqual(expected);
-  });
+  `(
+    "Should update the store according to $testName action",
+    ({ state, action, expected }) => {
+      expect(loadingReducer(state, action)).toEqual(expected);
+    }
+  );
 });

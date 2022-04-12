@@ -17,7 +17,7 @@ describe("users action", () => {
     ${usersError}       | ${message} | ${USERS_ERROR}
     ${updateUserAction} | ${user}    | ${UPDATE_USER}
     ${addNewUserAction} | ${user}    | ${ADD_NEW_USER}
-  `("$type", ({ action, payload, type }) => {
+  `("Should return $type action object", ({ action, payload, type }) => {
     expect(action(payload)).toEqual({ type, payload });
   });
 });
