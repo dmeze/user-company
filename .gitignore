@@ -44,5 +44,6 @@ yarn-error.log*
 
 # package-json
 package-lock.json
+/package-lock.json
 /backend/package-lock.json
 

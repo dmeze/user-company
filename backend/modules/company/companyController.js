@@ -35,7 +35,6 @@ const CompanyController = {
   },
   async delete(req, res) {
     try {
-      console.log(req.params);
       const company = await CompanyService.delete(req.params.id);
       return res.json(company);
     } catch (e) {

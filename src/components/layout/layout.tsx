@@ -18,10 +18,11 @@ import Sidebar from "./drawer";
 import { AppBar, Main } from "./styled.layout";
 import { LayoutProps } from "types/layout_interfaces";
 
-import styles from "styles/layout.module.scss";
 import { COMPANIES_PATH } from "constants/constants";
 import ModalsController from "components/modalsController/modalsController";
 import { ADD_COMPANY } from "components/modalsController/constants";
+
+import styles from "styles/layout.module.scss";
 
 const Layout = ({ children, title }: LayoutProps) => {
   const [open, setOpen] = useState(false);
