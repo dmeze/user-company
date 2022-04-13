@@ -1,46 +1,42 @@
 import { User, Credentials } from "types/user_interfaces";
+import {
+  CREATE_USER_PATH,
+  GET_USERS_PATH,
+  headers,
+  LOGIN_PATH,
+  UPDATE_USER_PATH,
+} from "./constants";
 
 const camelCaseKeys = require("camelcase-keys");
 
-export const getUserByIdApi = async (id: string) => {
-  const res = await fetch(`http://localhost:3001/api/users/${id}`);
-  return camelCaseKeys(await res.json());
-};
-
 export const getUsersApi = async () => {
-  const res = await fetch(`http://localhost:3001/api/users/`);
+  const res = await fetch(GET_USERS_PATH);
   return camelCaseKeys(await res.json());
 };
 
 export const updateUserApi = async (user: User) => {
   user._id = user.id;
   user.updatedBy = new Date();
-  await fetch(`http://localhost:3001/api/users/`, {
+  await fetch(UPDATE_USER_PATH, {
     method: "PUT",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
+    headers,
     body: JSON.stringify(user),
   });
 };
 
 export const loginApi = async (credentials: Credentials) => {
-  const res = await fetch("http://localhost:3001/api/login/", {
+  const res = await fetch(LOGIN_PATH, {
     method: "POST",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
+    headers,
     body: JSON.stringify(credentials),
   });
   return camelCaseKeys(await res.json());
 };
 
 export const createUserApi = async (user: User) => {
-  const res = await fetch("http://localhost:3001/api/users/", {
+  const res = await fetch(CREATE_USER_PATH, {
     method: "POST",
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
+    headers,
     body: JSON.stringify(user),
   });
   return camelCaseKeys(await res.json());
