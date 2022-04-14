@@ -50,8 +50,6 @@ const Company: NextPage<{ company: Company }> = ({ company }) => {
 
   const { data: session } = useSession();
 
-  console.log(session);
-
   const handleOpenModal = (type: string) => {
     setOpen({ open: true, type });
   };
