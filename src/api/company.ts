@@ -1,33 +1,21 @@
-import { Company } from "types/company_interfaces";
+import { getApi, postApi, putApi } from "./axios";
+
 import {
   CREATE_COMPANY_PATH,
   GET_COMPANIES_PATH,
-  headers,
   UPDATE_COMPANY_PATH,
 } from "./constants";
 
-const camelCaseKeys = require("camelcase-keys");
+import { Company } from "types/company_interfaces";
 
-export const getCompaniesApi = async () => {
-  const res = await fetch(GET_COMPANIES_PATH);
-  return camelCaseKeys(await res.json());
-};
+export const getCompaniesApi = () => getApi(GET_COMPANIES_PATH);
 
 export const updateCompanyApi = async (company: Company) => {
   company._id = company.id;
   company.updatedBy = new Date();
-  await fetch(UPDATE_COMPANY_PATH, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(company),
-  });
+  putApi(UPDATE_COMPANY_PATH, company);
 };
 
 export const createCompanyApi = async (company: Company) => {
-  const res = await fetch(CREATE_COMPANY_PATH, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(company),
-  });
-  return camelCaseKeys(await res.json());
+  return postApi(CREATE_COMPANY_PATH, company);
 };

@@ -117,7 +117,7 @@ const Table = ({
                   key={key}
                   {...restRowProps}
                   className={
-                    userId === (row.original as User).id
+                    userId && userId === (row.original as User).id
                       ? styles.tableRowHover
                       : styles.tableRow
                   }
