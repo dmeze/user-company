@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { connect } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { NextPage } from "next";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+
+import { isEmpty } from "lodash/fp";
 
 import {
   Email,
@@ -30,14 +32,24 @@ import { EDIT_USER } from "components/modalsController/constants";
 
 import { getUserSelector } from "store/user/users.selector";
 import { State } from "store/interfaces";
-import { wrapper } from "store/store";
 import { getUsers } from "store/user/users.thunk";
 
 import { User } from "types/user_interfaces";
 
 import styles from "styles/user.module.scss";
 
-const User: NextPage<{ user: User }> = ({ user }) => {
+const User: NextPage<{ id: string }> = ({ id }) => {
+  const dispatch = useDispatch();
+  const { getState } = useStore();
+
+  useEffect(() => {
+    if (isEmpty(getState().user.users)) dispatch(getUsers());
+  }, [dispatch, getState]);
+
+  const user: User = useSelector((state: State) =>
+    getUserSelector(state, id)(state)
+  )!;
+
   const [open, setOpen] = useState<{ open: boolean; type: string }>({
     open: false,
     type: "",
@@ -170,21 +182,12 @@ const User: NextPage<{ user: User }> = ({ user }) => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-    await store.dispatch<any>(getUsers());
-    return {
-      props: {
-        id: context.params!.id,
-      },
-    };
-  }
-);
-
-const mapStateToProps = (state: State, { id }: { id: string }) => {
+export const getServerSideProps = ({ params }: { params: { id: string } }) => {
   return {
-    user: getUserSelector(state, id)(state)!,
+    props: {
+      id: params.id,
+    },
   };
 };
 
-export default connect(mapStateToProps)(User);
+export default User;

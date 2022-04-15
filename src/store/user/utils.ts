@@ -1,16 +1,11 @@
+import { map } from "lodash/fp";
+
 import { User } from "types/user_interfaces";
 
 export const handleUpdateUser = (
   { users }: { users: Array<User> },
   user: User
-) => {
-  return users.map((mappedUser) => {
-    return mappedUser.id === user.id ? user : mappedUser;
-  });
-};
+) => map((mappedUser: User) => (mappedUser.id === user.id ? user : mappedUser));
 
-export const filterUserNames = (users: Array<User>) => {
-  return users.map(({ id, name }) => {
-    return { id, name };
-  });
-};
+export const filterUserNames = (users: Array<User>) =>
+  map(({ id, name }) => ({ id, name }), users);
