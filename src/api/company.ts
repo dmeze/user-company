@@ -1,4 +1,5 @@
 import { getApi, postApi, putApi } from "./axios";
+import { map } from "lodash/fp";
 
 import {
   CREATE_COMPANY_PATH,
@@ -8,7 +9,10 @@ import {
 
 import { Company } from "types/company_interfaces";
 
-export const getCompaniesApi = () => getApi(GET_COMPANIES_PATH);
+export const getCompaniesApi = () =>
+  getApi(GET_COMPANIES_PATH).then((companies) =>
+    map((company) => ({ ...company, id: company._id }), companies)
+  );
 
 export const updateCompanyApi = async (company: Company) => {
   company._id = company.id;

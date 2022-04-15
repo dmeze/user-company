@@ -27,6 +27,7 @@
     "axios": "^0.26.1",
     "formik": "^2.2.9",
     "jest": "^27.5.1",
+    "lodash": "^4.17.21",
     "next": "12.1.0",
     "next-redux-wrapper": "^7.0.5",
     "prettier": "^2.5.1",

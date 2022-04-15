@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import type { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { useRouter } from "next/router";
+
+import { isEmpty } from "lodash/fp";
 
 import Layout from "components/layout";
 import TableWrapper from "components/table";
@@ -14,10 +16,11 @@ import { USERS_TABLE } from "constants/constants";
 const Users: NextPage = () => {
   const { query } = useRouter();
   const dispatch = useDispatch();
+  const { getState } = useStore();
 
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    if (isEmpty(getState().user.users)) dispatch(getUsers());
+  }, [dispatch, getState]);
 
   const users = useSelector(getUsersSelector);
 

@@ -27,6 +27,7 @@ import { ArrowDropUpRounded, ArrowDropDownRounded } from "@mui/icons-material";
 import { User } from "types/user_interfaces";
 
 import styles from "styles/table.module.scss";
+import { Company } from "../../types/company_interfaces";
 
 const Table = ({
   columns,
@@ -129,7 +130,7 @@ const Table = ({
                         passHref={true}
                         key={key}
                         href={`/${path}/[id]`}
-                        as={`/${path}/${(row.original as User).id}`}
+                        as={`/${path}/${(row.original as User | Company).id}`}
                       >
                         <TableCell
                           className={styles.tableCell}

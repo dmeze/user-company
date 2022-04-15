@@ -1,4 +1,6 @@
 import { createSelector } from "reselect";
+import { find } from "lodash/fp";
+
 import { State } from "store/interfaces";
 
 export const rootCompaniesSelector = (state: State) => state.company;
@@ -10,6 +12,6 @@ export const getCompaniesSelector = createSelector(
 
 export const getCompanySelector = (state: State, id: string) => {
   return createSelector(getCompaniesSelector, (companies) => {
-    return companies.find((company) => company.id === id)!;
+    return find((company) => company.id === id, companies);
   });
 };

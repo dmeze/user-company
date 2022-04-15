@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { connect } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import { NextPage } from "next";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+
+import { isEmpty } from "lodash/fp";
 
 import {
   Avatar,
@@ -33,7 +35,6 @@ import ModalsController from "components/modalsController/modalsController";
 
 import { ADD_USER, EDIT_COMPANY } from "components/modalsController/constants";
 
-import { wrapper } from "store/store";
 import { getCompanies } from "store/companies/companies.thunk";
 import { getCompanySelector } from "store/companies/companies.selector";
 
@@ -42,7 +43,18 @@ import { Company } from "types/company_interfaces";
 
 import styles from "styles/company.module.scss";
 
-const Company: NextPage<{ company: Company }> = ({ company }) => {
+const Company: NextPage<{ id: string }> = ({ id }) => {
+  const dispatch = useDispatch();
+  const { getState } = useStore();
+
+  useEffect(() => {
+    if (isEmpty(getState().company.companies)) dispatch(getCompanies());
+  }, [dispatch, getState]);
+
+  const company: Company = useSelector((state: State) =>
+    getCompanySelector(state, id)(state)
+  )!;
+
   const [open, setOpen] = useState<{ open: boolean; type: string }>({
     open: false,
     type: "",
@@ -184,21 +196,12 @@ const Company: NextPage<{ company: Company }> = ({ company }) => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-    await store.dispatch<any>(getCompanies());
-    return {
-      props: {
-        id: context.params!.id,
-      },
-    };
-  }
-);
-
-const mapStateToProps = (state: State, { id }: { id: string }) => {
+export const getServerSideProps = ({ params }: { params: { id: string } }) => {
   return {
-    company: getCompanySelector(state, id)(state)!,
+    props: {
+      id: params.id,
+    },
   };
 };
 
-export default connect(mapStateToProps)(Company);
+export default Company;

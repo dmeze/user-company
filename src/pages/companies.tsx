@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import type { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
+
+import { isEmpty } from "lodash/fp";
 
 import Layout from "components/layout";
 import TableWrapper from "components/table";
@@ -12,10 +14,11 @@ import { COMPANIES_TABLE } from "constants/constants";
 
 const Companies: NextPage = () => {
   const dispatch = useDispatch();
+  const { getState } = useStore();
 
   useEffect(() => {
-    dispatch(getCompanies());
-  }, [dispatch]);
+    if (isEmpty(getState().company.companies)) dispatch(getCompanies());
+  }, [dispatch, getState]);
 
   const companies = useSelector(getCompaniesSelector);
 

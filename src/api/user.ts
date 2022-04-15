@@ -6,8 +6,12 @@ import {
   UPDATE_USER_PATH,
 } from "./constants";
 import { getApi, postApi, putApi } from "./axios";
+import { map } from "lodash/fp";
 
-export const getUsersApi = async () => getApi(GET_USERS_PATH);
+export const getUsersApi = async () =>
+  getApi(GET_USERS_PATH).then((users) =>
+    map((user) => ({ ...user, id: user._id }), users)
+  );
 
 export const updateUserApi = async (user: User) => {
   user._id = user.id;

@@ -1,17 +1,19 @@
+import { map, concat } from "lodash/fp";
+
 import { Company } from "types/company_interfaces";
 
 export const handleUpdateCompany = (
   { companies }: { companies: Array<Company> },
   company: Company
 ) => {
-  return companies.map((mappedCompany) => {
-    return mappedCompany.id === company.id ? company : mappedCompany;
-  });
+  map(
+    (mappedCompany) =>
+      mappedCompany.id === company.id ? company : mappedCompany,
+    companies
+  );
 };
 
 export const handleAddCompany = (
   { companies }: { companies: Array<Company> },
   company: Company
-) => {
-  return companies.concat(company);
-};
+) => concat(companies, company);

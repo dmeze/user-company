@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 
 import type { NextPage } from "next";
 import Link from "next/link";
+
+import { isEmpty } from "lodash/fp";
 
 import Button from "@material-ui/core/Button";
 
@@ -16,16 +18,17 @@ import { Name } from "types/search_interfaces";
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();
+  const { getState } = useStore();
 
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    if (isEmpty(getState().user.users)) dispatch(getUsers());
+  }, [dispatch, getState]);
 
   const names: Array<Name> = useSelector(getUserNamesSelector);
 
   return (
     <Layout title="Home">
-      <Link href="/companies">
+      <Link passHref href="/companies">
         <Button variant="contained">Go to companies</Button>
       </Link>
       <Search options={names} />
